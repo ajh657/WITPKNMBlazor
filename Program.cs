@@ -12,6 +12,9 @@ namespace WITPKNMBlazor
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
+            builder.Services.AddHttpClient();
+            builder.Services.AddTransient<IPokemonApi, PokemonApi>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

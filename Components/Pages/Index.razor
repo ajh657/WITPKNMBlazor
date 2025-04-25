@@ -1,12 +1,91 @@
-@page "/"
+@page "/";
+@using WITPKNMBlazor.Data
+@inject IPokemonApi api;
+@rendermode InteractiveServer
 
 <div class="centered-container">
     <div>
         <h1>Who is that Pokemon</h1>
-        <div><img src="#" alt="Alternate Text" /></div>
+        @if (state == AppState.Loading)
+        {
+            <h1>Loading...</h1>
+        }
+        else
+        {
+            if (state == AppState.Error)
+            {
+                <h1>Application error Has occured</h1>
+                <button @onclick="SetUpGame">Retry</button>
+            }
+            else
+            {
+
+                <div><img src="@data.ArtworkUrl" alt="Alternate Text" class="@(state == AppState.ReadyToGuess ? "blackout":"")" /></div>
+
+                if (state == AppState.ReadyToGuess)
+                {
+                    <span><input type="text" @bind-value="GuessString" /></span>
+                    <span><button @onclick="Submit">Guess</button></span>
+                }
+
+                if(state == AppState.RightGuess)
+                {
+                    <h1>You quessed it right!</h1>
+                }
+
+                if (state == AppState.WrongGuess)
+                {
+                    <h1>Better luck next time</h1>
+                }
+
+                if (state == AppState.WrongGuess || state == AppState.RightGuess)
+                {
+                    <button @onclick="SetUpGame">Retry</button>
+                }
+            }
+        }
     </div>
 </div>
 
 @code {
-    
+    public PokemonData? data = null;
+    private Random rnd = new Random();
+    public AppState state = AppState.Loading;
+
+    public string? GuessString { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await SetUpGame();
+    }
+
+    public void Submit(MouseEventArgs e)
+    {
+        if (data.Name.Equals(GuessString, StringComparison.InvariantCultureIgnoreCase))
+        {
+            state = AppState.RightGuess;
+        }
+        else
+        {
+            state = AppState.WrongGuess;
+        }
+    }
+
+    public async Task Restart(MouseEventArgs e)
+    {
+        await SetUpGame();
+    }
+
+    public async Task SetUpGame()
+    {
+        try
+        {
+            data = await api.GetPokemon(rnd.Next(1303));
+            state = AppState.ReadyToGuess;
+        }
+        catch (Exception)
+        {
+            state = AppState.Error;
+        }
+    }
 }

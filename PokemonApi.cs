@@ -11,13 +11,8 @@ namespace WITPKNMBlazor
             var request = await http.GetAsync($"https://pokeapi.co/api/v2/pokemon/{id}");
             var data = JsonConvert.DeserializeObject<PokemonApiData>(await request.Content.ReadAsStringAsync());
 
-            //Data Validation
-            if (data?.name == null
-                || data?.sprites?.front_default == null
-                || data?.sprites?.other?.officialartwork?.front_default == null
-                || data?.cries?.latest == null
-                || data?.types == null
-                )
+            //Data Validation for name and sprites
+            if (data?.name == null || data?.sprites?.other?.officialartwork?.front_default == null)
             {
                 throw new InvalidDataException();
             }
@@ -26,8 +21,6 @@ namespace WITPKNMBlazor
             {
                 Name = data.name,
                 ArtworkUrl = data.sprites.other.officialartwork.front_default,
-                SpriteUrl = data.sprites.front_default,
-                TypeUrlList = data.types.Where(x => x.type.url != null).Select(x => x.type.url).ToArray()
             };
         }
     }

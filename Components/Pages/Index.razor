@@ -19,8 +19,7 @@
             }
             else
             {
-
-                <div><img src="@data.ArtworkUrl" alt="Alternate Text" class="@(state == AppState.ReadyToGuess ? "blackout":"")" /></div>
+                <div><img src="@data.ArtworkUrl" class="@(state == AppState.ReadyToGuess ? "blackout":"")" /></div>
 
                 if (state == AppState.ReadyToGuess)
                 {

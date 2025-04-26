@@ -10,6 +10,7 @@ namespace WITPKNMBlazor
 
         public async Task<int> GetPokemon()
         {
+            //check if cache is already set up to prevent unnessesary retrival of all pokemon entries 
             if (_cache.Length == 0)
             {
                 _cache = await GetPokemonsFromApi();
@@ -23,7 +24,7 @@ namespace WITPKNMBlazor
             var request = await http.GetAsync($"https://pokeapi.co/api/v2/pokemon?limit=1302");
             var data = JsonConvert.DeserializeObject<PokemonList>(await request.Content.ReadAsStringAsync());
 
-            //Parse pokemon id's from the urls to an int array
+            //Parse pokemon id's from the urls to an int array with the method ExtractId
             var list = data.results.Select(x => ExtractId(x.url)).Where(x => x != null).Cast<string>();
             return list.Select(int.Parse).ToArray();
         }

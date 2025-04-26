@@ -13,6 +13,7 @@ namespace WITPKNMBlazor
                 .AddInteractiveServerComponents();
 
             builder.Services.AddHttpClient();
+            builder.Services.AddSingleton<PokemonListCache>();
             builder.Services.AddTransient<IPokemonApi, PokemonApi>();
 
             var app = builder.Build();

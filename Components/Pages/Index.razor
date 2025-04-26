@@ -49,7 +49,6 @@
 
 @code {
     public PokemonData? data = null;
-    private Random rnd = new Random();
     public AppState state = AppState.Loading;
 
     public string? GuessString { get; set; }
@@ -80,7 +79,7 @@
     {
         try
         {
-            data = await api.GetPokemon(rnd.Next(1303));
+            data = await api.GetPokemon();
             state = AppState.ReadyToGuess;
         }
         catch (Exception)
